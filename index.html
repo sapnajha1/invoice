@@ -5,10 +5,15 @@
 
     <title>Invoice</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 
 </head>
 
 <body>
+    <button onclick="generatePDF()">Download PDF</button>
+
     <br />
     <br />
     <div class="page">
@@ -133,7 +138,8 @@
             <tr>
                 <th>SI.<br>NO.</th>
                 <th>Description</th>
-                <th colspan="2">Unit <br>Price</th>
+                <th colspan="2">Unit <br>Price  
+                </th>
                 <th> Net<br>Amount</th>
                 <th> Tax<br>Rate</th>
                 <th> Tax<br>Type</th>
@@ -225,6 +231,22 @@
 
         <p class="bottom">Whethertax is payable under reverse charge - No</p>
     </div>
+
+    <script>
+        async function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'pt', 'a4');
+            const invoice = document.querySelector('.page');
+
+            // Convert HTML to canvas
+            const canvas = await html2canvas(invoice, { scale: 2 });
+            const imgData = canvas.toDataURL('image/png');
+
+            // Add image to PDF
+            pdf.addImage(imgData, 'PNG', 10, 10, 580, canvas.height * 580 / canvas.width);
+            pdf.save('invoice.pdf');
+        }
+    </script>
 
 </body>
 
